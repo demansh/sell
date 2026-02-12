@@ -2,10 +2,6 @@
 layout: default
 ---
 
-<div class="search-container">
-  <input type="text" id="searchInput" placeholder="Поиск объявлений..." autocomplete="off">
-</div>
-
 <div class="feed-grid" id="postsContainer">
   {% for post in site.posts %}
   <div class="post-card" data-content="{{ post.content | strip_html | downcase }}" data-author="{{ post.author_name | downcase }}">
@@ -20,4 +16,8 @@ layout: default
     </a>
   </div>
   {% endfor %}
+</div>
+
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Поиск объявлений..." autocomplete="off">
 </div>

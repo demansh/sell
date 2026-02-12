@@ -13,35 +13,11 @@ body {
   align-items: center; /* Центрирует всё по горизонтали */
 }
 
-/* Ограничитель ширины для ленты и шапки */
-.search-container, 
-.feed-grid, 
-.post-full {
-  width: 100%;
-  max-width: 500px; /* Идеальная ширина для мобильного контента на десктопе */
-  background: #fff;
-}
-
-/* Фиксированная шапка тоже должна быть центрирована */
-.search-container {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%); /* Магия центрирования fixed элемента */
-  box-sizing: border-box;
-  border-bottom: 1px solid #dbdbdb;
-}
-
 /* Добавляем фон для "пустых" областей по бокам на десктопе */
 @media (min-width: 501px) {
   html {
     background-color: #efefef; /* Серый фон за пределами "телефона" */
   }
-}
-
-#searchInput {
-  width: 90%; margin: 0 auto; display: block;
-  padding: 10px; border: 1px solid #ddd; border-radius: 8px;
 }
 
 .feed-grid {
