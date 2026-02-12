@@ -15,18 +15,42 @@ body { font-family: -apple-system, sans-serif; background: var(--bg-color); marg
   padding: 10px; border: 1px solid #ddd; border-radius: 8px;
 }
 
+/* Сетка 3х3 (Instagram style) */
 .feed-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 колонки на мобилках */
-  gap: 5px; padding: 5px;
+  grid-template-columns: repeat(3, 1fr); /* Ровно 3 колонки */
+  gap: 2px; /* Минимальный зазор, как в соцсетях */
+  padding: 2px;
 }
 
-.post-card { background: white; overflow: hidden; display: flex; flex-direction: column; }
+/* Квадратная карточка */
+.post-card {
+  background: white;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1 / 1; /* Делает контейнер строго квадратным */
+}
+
+.post-card a {
+  text-decoration: none;
+  height: 100%;
+  display: block;
+}
+
+.post-image {
+  height: 100%;
+  width: 100%;
+}
 
 .post-image img {
-  width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Обрезает края, сохраняя центр, чтобы заполнить квадрат */
+  display: block;
 }
 
-.post-info { padding: 8px; font-size: 12px; }
-.post-date { color: #888; font-weight: bold; }
-.post-desc { margin: 4px 0 0; color: #333; height: 3em; overflow: hidden; }
+/* Скрываем текст на главной для эффекта "витрины" */
+/* Или накладываем его полупрозрачным слоем при наведении */
+.post-info {
+  display: none; /* В стиле Instagram на главной обычно только фото */
+}
