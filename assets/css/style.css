@@ -1,0 +1,32 @@
+:root {
+  --tg-blue: #2481cc;
+  --bg-color: #f0f2f5;
+}
+
+body { font-family: -apple-system, sans-serif; background: var(--bg-color); margin: 0; padding-top: 60px; }
+
+.search-container {
+  position: fixed; top: 0; width: 100%; z-index: 1000;
+  background: white; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#searchInput {
+  width: 90%; margin: 0 auto; display: block;
+  padding: 10px; border: 1px solid #ddd; border-radius: 8px;
+}
+
+.feed-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 колонки на мобилках */
+  gap: 5px; padding: 5px;
+}
+
+.post-card { background: white; overflow: hidden; display: flex; flex-direction: column; }
+
+.post-image img {
+  width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+}
+
+.post-info { padding: 8px; font-size: 12px; }
+.post-date { color: #888; font-weight: bold; }
+.post-desc { margin: 4px 0 0; color: #333; height: 3em; overflow: hidden; }

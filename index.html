@@ -1,0 +1,23 @@
+---
+layout: default
+---
+
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Поиск объявлений..." autocomplete="off">
+</div>
+
+<div class="feed-grid" id="postsContainer">
+  {% for post in site.posts %}
+  <div class="post-card" data-content="{{ post.content | strip_html | downcase }}" data-author="{{ post.author_name | downcase }}">
+    <a href="{{ post.url }}">
+      <div class="post-image">
+        <img src="{{ post.images[0] }}" alt="Preview" loading="lazy">
+      </div>
+      <div class="post-info">
+        <span class="post-date">{{ post.date | date: "%d.%m.%Y" }}</span>
+        <p class="post-desc">{{ post.description_short }}...</p>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
