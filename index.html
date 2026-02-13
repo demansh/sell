@@ -4,14 +4,15 @@ layout: default
 
 <div class="feed-grid" id="postsContainer">
   {% for post in site.posts %}
-  <div class="post-card" data-content="{{ post.content | strip_html | downcase }}" data-author="{{ post.author_name | downcase }}">
+  <div class="post-card" 
+       data-content="{{ post.title | downcase }} {{ post.content | strip_html | downcase }}" 
+       data-author="{{ post.telegram_handle | downcase }}">
     <a href="{{ post.url }}">
       <div class="post-image">
-        <img src="{{ post.images[0] }}" alt="Preview" loading="lazy">
+        <img src="{{ post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
       </div>
-      <div class="post-info">
-        <span class="post-date">{{ post.date | date: "%d.%m.%Y" }}</span>
-        <p class="post-desc">{{ post.description_short }}...</p>
+      <div class="post-title-overlay">
+        {{ post.title }}
       </div>
     </a>
   </div>
@@ -19,5 +20,5 @@ layout: default
 </div>
 
 <div class="search-container">
-  <input type="text" id="searchInput" placeholder="Поиск объявлений..." autocomplete="off">
+  <input type="text" id="searchInput" placeholder="Поиск по объявлениям..." autocomplete="off">
 </div>

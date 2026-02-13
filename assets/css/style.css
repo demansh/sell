@@ -28,10 +28,14 @@ body {
   padding-bottom: 50px;
 }
 
+/* Обновленная карточка в сетке */
 .post-card {
+  background: white;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  aspect-ratio: 1 / 1;
   overflow: hidden;
+  border-radius: 4px; /* Легкое закругление для современности */
 }
 
 .post-card img {
@@ -46,14 +50,6 @@ body {
   opacity: 0.8;
 }
 
-/* Квадратная карточка */
-.post-card {
-  background: white;
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 1 / 1; /* Делает контейнер строго квадратным */
-}
-
 .post-card a {
   text-decoration: none;
   height: 100%;
@@ -61,19 +57,29 @@ body {
 }
 
 .post-image {
-  height: 100%;
   width: 100%;
+  aspect-ratio: 1 / 1; /* Квадрат */
+  overflow: hidden;
 }
 
 .post-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Обрезает края, сохраняя центр, чтобы заполнить квадрат */
-  display: block;
+  object-fit: cover;
 }
 
-/* Скрываем текст на главной для эффекта "витрины" */
-/* Или накладываем его полупрозрачным слоем при наведении */
-.post-info {
-  display: none; /* В стиле Instagram на главной обычно только фото */
+/* Стиль для заголовка под превью */
+.post-title-overlay {
+  padding: 4px 2px;
+  font-size: 11px;
+  line-height: 1.2;
+  color: #262626;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Троеточие, если заголовок не влез */
+  font-weight: 500;
 }
+
+/* Убираем старые оверлеи, если они были */
+.post-info { display: none; }
