@@ -1,0 +1,46 @@
+/* Контейнер сетки */
+.feed-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Ровно 3 колонки всегда */
+  gap: 2px;
+  width: 100%;
+  max-width: 500px; /* Ограничение для десктопа */
+  margin: 0 auto;
+  padding-bottom: 100px; /* Место для плавающего поиска */
+}
+
+/* Сама карточка */
+.post-card {
+  display: block;
+  text-decoration: none;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Контейнер картинки (Квадрат) */
+.post-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.post-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Заголовок под картинкой */
+.post-title-overlay {
+  padding: 4px 2px;
+  font-size: 11px;
+  line-height: 1.2;
+  color: #262626;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
