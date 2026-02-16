@@ -3,17 +3,10 @@ layout: default
 ---
 
 <article class="post-view">
-  <nav class="post-nav">
-    <a href="javascript:history.back()" class="back-btn">
-      <svg viewBox="0 0 24 24" width="24" height="24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-      Назад
-    </a>
-  </nav>
-
-  <div class="post-gallery">
+  <div class="post-carousel">
     {% for img in page.images %}
-      <div class="gallery-item">
-        <img src="{{ img | relative_url }}" alt="{{ page.title }}" loading="lazy">
+      <div class="carousel-item">
+        <img src="{{ img | relative_url }}" alt="{{ page.title }}">
       </div>
     {% endfor %}
   </div>
@@ -21,7 +14,7 @@ layout: default
   <div class="post-details">
     <div class="post-meta">
       <span class="post-date">{{ page.date | date: "%d.%m.%Y" }}</span>
-      <span class="post-author">От: {{ page.author_name }}</span>
+      <span class="post-author">{{ page.author_name }}</span>
     </div>
     
     <h1 class="post-title-full">{{ page.title }}</h1>
@@ -33,7 +26,7 @@ layout: default
 
   <div class="contact-container">
     <a href="https://t.me/{{ page.author_handle | remove: '@' }}" class="contact-button" target="_blank">
-      Написать в Telegram (@{{ page.telegram_handle | remove: '@' }})
+      Написать в Telegram @{{ page.author_handle | remove: '@' }}
     </a>
   </div>
 </article>
