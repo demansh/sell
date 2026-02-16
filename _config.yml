@@ -4,3 +4,5 @@ remote_theme: jekyll/minima
 permalink: /posts/:title/
 markdown: kramdown
 exclude: [fetch_data.py, requirements.txt, .github]
+url: "https://demansh.github.io"
+baseurl: "/sell
