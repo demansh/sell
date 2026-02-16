@@ -1,0 +1,85 @@
+/* assets/css/post.css */
+.post-view {
+  background: #fff;
+  min-height: 100vh;
+  padding-bottom: 100px; /* Чтобы кнопка не перекрывала текст */
+}
+
+/* Верхняя панель */
+.post-nav {
+  padding: 10px;
+  background: rgba(255,255,255,0.9);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid #eee;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #2481cc;
+  font-weight: 500;
+}
+
+/* Галерея */
+.post-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Текстовый блок */
+.post-details {
+  padding: 20px;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.post-title-full {
+  font-size: 22px;
+  margin: 0 0 15px 0;
+  color: #222;
+}
+
+.post-content-text {
+  line-height: 1.6;
+  color: #444;
+  white-space: pre-wrap; /* Сохраняет переносы строк из Telegram */
+}
+
+/* Кнопка связи (аналогично поиску по стилистике) */
+.contact-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 460px;
+  z-index: 1000;
+}
+
+.contact-button {
+  display: block;
+  background: #2481cc;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(36, 129, 204, 0.4);
+}
