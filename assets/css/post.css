@@ -1,10 +1,11 @@
-/* assets/css/post.css */
+/* Post view page styles */
 .post-view {
   background: #fff;
   min-height: 100vh;
   padding-bottom: 120px;
 }
 
+/* Carousel */
 .post-carousel {
   display: flex;
   overflow-x: auto;
@@ -12,30 +13,28 @@
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  /* Убираем лишнее ускорение */
-  overscroll-behavior-x: contain; 
+  overscroll-behavior-x: contain;
+  cursor: grab;
 }
 
 .post-carousel::-webkit-scrollbar {
-  display: none; /* Прячем скроллбар в Chrome/Safari */
+  display: none;
 }
-
 
 .carousel-item {
   flex: 0 0 100%;
   scroll-snap-align: start;
-  /* ФИКС: Остановка на каждом слайде */
-  scroll-snap-stop: always; 
+  scroll-snap-stop: always;
 }
 
 .carousel-item img {
   width: 100%;
   height: auto;
-  max-height: 80vh; /* Чтобы длинные фото не уходили далеко вниз */
+  max-height: 80vh;
   object-fit: contain;
 }
 
-/* ТЕКСТ И ОТСТУПЫ */
+/* Post content */
 .post-details {
   padding: 15px 20px;
 }
@@ -52,11 +51,11 @@
   white-space: pre-wrap;
   display: flex;
   flex-direction: column;
-  gap: 2px; /* Управляем расстоянием между блоками через gap */
+  gap: 2px;
 }
 
 .post-content-text p {
-  margin: 0 0 2px 0 !important; /* Еще сильнее уменьшаем отступ */
+  margin: 0 0 2px 0 !important;
   padding: 0 !important;
 }
 
@@ -67,7 +66,7 @@
   gap: 15px;
 }
 
-/* КНОПКА СВЯЗИ */
+/* Contact button */
 .contact-container {
   position: fixed;
   bottom: 25px;
@@ -87,33 +86,4 @@
   text-decoration: none;
   font-weight: 600;
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-
-
-
-
-/* Контейнер для позиционирования кнопок */
-.carousel-container {
-  position: relative;
-  width: 100%;
-}
-
-/* Стили кнопок (скрыты на тач-устройствах по умолчанию) */
-.carousel-control {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.3);
-  color: white;
-  border: none;
-  padding: 15px 10px;
-  cursor: pointer;
-  z-index: 10;
-  border-radius: 0 5px 5px 0;
-}
-.carousel-control.next { right: 0; border-radius: 5px 0 0 5px; }
-
-@media (hover: none) {
-  .carousel-control { display: none; } /* Прячем на телефонах */
 }

@@ -1,15 +1,15 @@
-/* Контейнер сетки */
+/* Feed grid container */
 .feed-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Ровно 3 колонки всегда */
+  grid-template-columns: repeat(3, 1fr);
   gap: 2px;
   width: 100%;
-  max-width: 500px; /* Ограничение для десктопа */
+  max-width: 500px;
   margin: 0 auto;
-  padding-bottom: 100px; /* Место для плавающего поиска */
+  padding-bottom: 100px;
 }
 
-/* Сама карточка */
+/* Post card */
 .post-card {
   display: block;
   text-decoration: none;
@@ -17,7 +17,7 @@
   overflow: hidden;
 }
 
-/* Контейнер картинки (Квадрат) */
+/* Image container (square) */
 .post-image {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -32,7 +32,7 @@
   display: block;
 }
 
-/* Заголовок под картинкой */
+/* Title overlay */
 .post-title-overlay {
   padding: 4px 2px;
   font-size: 11px;

@@ -10,9 +10,11 @@ body {
 
 main {
   width: 100%;
-  max-width: 500px; /* Контейнер для центрирования всего контента */
+  max-width: 500px;
 }
 
 @media (min-width: 501px) {
-  html { background-color: #efefef; }
+  html {
+    background-color: #efefef;
+  }
 }

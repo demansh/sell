@@ -4,8 +4,8 @@ layout: default
 
 <div class="feed-grid" id="postsContainer">
   {% for post in site.posts %}
-  <div class="post-card" 
-       data-content="{{ post.title | downcase }} {{ post.content | strip_html | downcase }}" 
+  <div class="post-card"
+       data-content="{{ post.title | downcase }} {{ post.content | strip_html | downcase }}"
        data-author="{{ post.telegram_handle | downcase }}">
     <a href="{{ post.url | relative_url }}">
       <div class="post-image">
@@ -22,3 +22,5 @@ layout: default
 <div class="search-container">
   <input type="text" id="searchInput" placeholder="Поиск по объявлениям..." autocomplete="off">
 </div>
+
+<script src="{{ '/assets/js/search.js' | relative_url }}"></script>

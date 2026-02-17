@@ -1,11 +1,11 @@
-/* assets/css/search.css */
+/* Floating search bar */
 .search-container {
   position: fixed;
-  bottom: 20px; /* Отступ от низа */
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
-  max-width: 460px; /* Чуть меньше ширины контента для эстетики */
+  max-width: 460px;
   z-index: 9999;
 }
 
@@ -13,11 +13,11 @@
   width: 100%;
   padding: 15px 20px;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 25px; /* Закругленные края */
-  background: rgba(255, 255, 255, 0.85); /* Полупрозрачный белый */
-  backdrop-filter: blur(10px); /* Эффект матового стекла */
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  font-size: 16px; /* Предотвращает авто-зум в iOS */
+  font-size: 16px;
   outline: none;
   box-sizing: border-box;
 }
@@ -25,9 +25,4 @@
 #searchInput:focus {
   background: #fff;
   border-color: var(--tg-blue, #2481cc);
-}
-
-/* Добавим отступ снизу у ленты, чтобы поиск не перекрывал последний ряд фото */
-.feed-grid {
-  padding-bottom: 100px !important; 
 }
