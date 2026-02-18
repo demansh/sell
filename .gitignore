@@ -6,3 +6,5 @@ vendor
 .DS_Store
 .env
 docs/
+venv/
+session_name.session
