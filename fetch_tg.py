@@ -2,8 +2,8 @@ import os
 import re
 import asyncio
 from datetime import datetime, timedelta
-from telethon import TelegramClient, events
-from telethon.tl.types import MessageService
+from telethon import TelegramClient
+from telethon.tl.types import MessageService, User
 from dotenv import load_dotenv
 
 # Загружаем переменные из .env файла, если он существует
@@ -31,7 +31,7 @@ client = TelegramClient('my_session', API_ID, API_HASH)
 def sanitize_filename(name):
     return re.sub(r'[^\w\-_\.]', '_', name)
 
-def get_post_content(text, author_name, author_handle, date, images):
+def get_post_content(text, author_name, author_handle, author_id, date, images):
     """Генерация контента Markdown файла."""
     title = text[:20].strip().replace('"', '\\"')
     img_list = "\n  - ".join([f'"{img}"' for img in images])
@@ -41,6 +41,7 @@ layout: post
 date: {date.strftime('%Y-%m-%d %H:%M:%S')}
 author_name: "{author_name}"
 author_handle: "{author_handle}"
+author_id: "{author_id}"
 images: 
   - {img_list}
 title: "{title}"
@@ -73,27 +74,44 @@ async def cleanup_old_posts():
                     os.remove(filepath)
                     print(f"🗑 Удален старый пост: {filename}")
 
+async def get_author_data(message):
+    """
+    Извлекает имя, никнейм и уникальный ID автора.
+    """
+    name = "Пользователь"
+    handle = ""  # Будет пустым, если юзернейма нет
+    user_id = ""
+
+    sender = await message.get_sender()
+
+    if isinstance(sender, User):
+        first = sender.first_name or ""
+        last = sender.last_name or ""
+        name = f"{first} {last}".strip() or "Участник"
+        handle = sender.username if sender.username else ""
+        user_id = str(sender.id)
+    
+    return name, handle, user_id
+
 async def process_messages(messages):
-    """Обработка группы сообщений (альбома или одиночного поста)."""
-    main_msg = messages[0]
-    # Берем текст из первого сообщения с текстом (в альбомах текст обычно в одном)
-    text = next((m.text for m in messages if m.text), "")
-    if not text and not main_msg.media:
-        return
-
-    author_name = "Admin" # Можно тянуть через main_msg.sender если нужно
-    author_handle = CHANNEL_USERNAME
-    msg_id = main_msg.id
+    main_msg = next((m for m in messages if m.text), messages[0])
+    
+    # ПОЛУЧАЕМ ДАННЫЕ (теперь 3 параметра)
+    author_name, author_handle, author_id = await get_author_data(main_msg)
+    
+    text = main_msg.text or ""
     date = main_msg.date
+    msg_id = main_msg.id
 
-    # Проверка на дубликаты и Bump
+    # Логика дедупликации стала точнее: текст + конкретный ID
     existing_file = None
     for filename in os.listdir(POSTS_DIR):
+        if not filename.endswith(".md"): continue
         f_path = os.path.join(POSTS_DIR, filename)
         with open(f_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            # Если текст и автор совпадают (не считая даты)
-            if text in content and f'author_handle: "{author_handle}"' in content:
+            # Проверяем уникальное поле author_id
+            if text[:100] in content and f'author_id: "{author_id}"' in content:
                 existing_file = f_path
                 break
 
@@ -124,7 +142,7 @@ async def process_messages(messages):
     post_path = os.path.join(POSTS_DIR, post_filename)
     
     with open(post_path, 'w', encoding='utf-8') as f:
-        f.write(get_post_content(text, author_name, author_handle, date, image_paths))
+        f.write(get_post_content(text, author_name, author_handle, author_id, date, image_paths))
     print(f"✅ Создан новый пост: {post_filename}")
 
 async def main():

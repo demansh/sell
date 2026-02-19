@@ -25,9 +25,15 @@ layout: default
   </div>
 
   <div class="contact-container">
-    <a href="https://t.me/{{ page.author_handle | remove: '@' }}" class="contact-button" target="_blank">
-      Написать в Telegram @{{ page.author_handle | remove: '@' }}
-    </a>
+    {% if page.author_handle and page.author_handle != "" %}
+      <a href="https://t.me/{{ page.author_handle }}" class="contact-button" target="_blank">
+        Написать в Telegram
+      </a>
+    {% else %}
+      <a href="tg://user?id={{ page.author_id }}" class="contact-button" target="_blank">
+        Написать в Telegram
+      </a>
+    {% endif %}
   </div>
 </article>
 
