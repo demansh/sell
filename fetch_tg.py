@@ -26,7 +26,7 @@ if not API_ID or not API_HASH:
 os.makedirs(POSTS_DIR, exist_ok=True)
 os.makedirs(IMAGES_DIR, exist_ok=True)
 
-client = TelegramClient('session_name', API_ID, API_HASH)
+client = TelegramClient('my_session', API_ID, API_HASH)
 
 def sanitize_filename(name):
     return re.sub(r'[^\w\-_\.]', '_', name)
