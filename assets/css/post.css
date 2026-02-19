@@ -22,9 +22,13 @@
 }
 
 .carousel-item {
+  display: flex;
   flex: 0 0 100%;
   scroll-snap-align: start;
   scroll-snap-stop: always;
+  align-items: center;
+  justify-content: center;
+  background: #000;
 }
 
 .carousel-item img {

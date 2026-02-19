@@ -46,9 +46,28 @@ async def save_last_id(last_id):
 def sanitize_filename(name):
     return re.sub(r'[^\w\-_\.]', '_', name)
 
+def get_smart_title(text, limit=30):
+    if not text:
+        return "Объявление"
+    
+    # Очищаем от лишних пробелов и переносов в начале
+    text = text.strip().split('\n')[0] 
+    
+    if len(text) <= limit:
+        return text.replace('"', '\\"')
+    
+    # Режем до лимита и ищем последний пробел
+    truncated = text[:limit]
+    last_space = truncated.rfind(' ')
+    
+    if last_space != -1:
+        truncated = truncated[:last_space]
+    
+    return (truncated.strip() + "...").replace('"', '\\"')
+
 def get_post_content(text, author_name, author_handle, author_id, msg_id, date, images):
     """Генерация контента Markdown файла."""
-    title = text[:20].strip().replace('"', '\\"')
+    title = get_smart_title(text)
     img_list = "\n  - ".join([f'"{img}"' for img in images])
     
     front_matter = f"""---
