@@ -142,6 +142,10 @@ async def process_messages(messages):
             path = os.path.join(IMAGES_DIR, filename)
             await client.download_media(msg.photo, path)
             image_paths.append(f"/{IMAGES_DIR}/{filename}")
+    
+    if not image_paths:
+        print(f"⏩ Пропуск сообщения {messages[0].id}: нет изображений.")
+        return
 
     # Создание Markdown
     post_filename = f"{date.strftime('%Y-%m-%d')}-{msg_id}.md"

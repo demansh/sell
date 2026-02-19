@@ -7,3 +7,4 @@ url: "https://demansh.github.io"
 baseurl: "/sell"
 permalink: /posts/:title
 telegram_channel_name: baraxolka_in_armenia
+future: true
