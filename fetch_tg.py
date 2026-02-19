@@ -1,7 +1,7 @@
 import os
 import re
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from telethon import TelegramClient
 from telethon.tl.types import MessageService, User
 from dotenv import load_dotenv
@@ -17,6 +17,7 @@ POSTS_DIR = '_posts'
 IMAGES_DIR = 'assets/img/posts'
 BASE_URL = '/sell'
 EXPIRY_DAYS = 7
+LAST_ID_FILE = 'last_id.txt'
 
 # Проверка на дурака
 if not API_ID or not API_HASH:
@@ -27,6 +28,20 @@ os.makedirs(POSTS_DIR, exist_ok=True)
 os.makedirs(IMAGES_DIR, exist_ok=True)
 
 client = TelegramClient('my_session', API_ID, API_HASH)
+
+async def get_last_id():
+    """Читает ID последнего обработанного сообщения из файла."""
+    if os.path.exists(LAST_ID_FILE):
+        with open(LAST_ID_FILE, 'r') as f:
+            content = f.read().strip()
+            if content.isdigit():
+                return int(content)
+    return None
+
+async def save_last_id(last_id):
+    """Сохраняет ID последнего сообщения."""
+    with open(LAST_ID_FILE, 'w') as f:
+        f.write(str(last_id))
 
 def sanitize_filename(name):
     return re.sub(r'[^\w\-_\.]', '_', name)
@@ -155,6 +170,25 @@ async def process_messages(messages):
         f.write(get_post_content(text, author_name, author_handle, author_id, msg_id, date, image_paths))
     print(f"✅ Создан новый пост: {post_filename}")
 
+
+async def main():
+    await client.start(bot_token=BOT_TOKEN)
+    
+    
+
+    # Группируем сообщения в альбомы
+    album_groups = {}
+    for message in reversed(new_messages): # Обрабатываем от старых к новым
+        if message.grouped_id:
+            album_groups.setdefault(message.grouped_id, []).append(message)
+        else:
+            await process_messages([message])
+
+    for group in album_groups.values():
+        await process_messages(sorted(group, key=lambda x: x.id))
+
+    print(f"🚀 Обработка завершена. Найдено сообщений: {len(new_messages)}")
+
 async def main():
     await client.start()
     print("🚀 Скрипт запущен...")
@@ -162,22 +196,44 @@ async def main():
     # Чистим старье перед началом
     await cleanup_old_posts()
 
-    # Собираем последние сообщения
-    album_groups = {} # {grouped_id: [messages]}
+    last_processed_id = await get_last_id()
+    new_messages = []
     
-    async for message in client.iter_messages(CHANNEL_USERNAME, limit=100):
-        if isinstance(message, MessageService): continue
+    if last_processed_id is None:
+        # ЛОГИКА 1: Первый запуск — берем посты за последний час
+        print("🕯 Первый запуск. Ищем посты за последний час...")
+        hour_ago = datetime.now(timezone.utc) - timedelta(hours=1)
         
+        async for message in client.iter_messages(CHANNEL_USERNAME):
+            if message.date < hour_ago:
+                break
+            new_messages.append(message)
+    else:
+        # ЛОГИКА 2: Инкрементальный запуск — только новые посты
+        print(f"🔄 Ищем посты новее ID: {last_processed_id}")
+        async for message in client.iter_messages(CHANNEL_USERNAME, min_id=last_processed_id):
+            new_messages.append(message)
+
+    if not new_messages:
+        print("☕️ Новых постов нет.")
+        return
+
+    # Сохраняем ID самого последнего сообщения (они приходят от новых к старым, так что это первый в списке)
+    # Важно: берем ID до фильтрации картинок, чтобы не застревать на текстовых постах
+    await save_last_id(max(m.id for m in new_messages))
+
+    # Группируем сообщения в альбомы
+    album_groups = {}
+    for message in reversed(new_messages): # Обрабатываем от старых к новым
         if message.grouped_id:
-            if message.grouped_id not in album_groups:
-                album_groups[message.grouped_id] = []
-            album_groups[message.grouped_id].append(message)
+            album_groups.setdefault(message.grouped_id, []).append(message)
         else:
             await process_messages([message])
 
-    # Обрабатываем альбомы
     for group in album_groups.values():
-        await process_messages(group)
+        await process_messages(sorted(group, key=lambda x: x.id))
+
+    print(f"🚀 Обработка завершена. Найдено сообщений: {len(new_messages)}")
 
 if __name__ == '__main__':
     asyncio.run(main())
