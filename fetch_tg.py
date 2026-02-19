@@ -31,7 +31,7 @@ client = TelegramClient('my_session', API_ID, API_HASH)
 def sanitize_filename(name):
     return re.sub(r'[^\w\-_\.]', '_', name)
 
-def get_post_content(text, author_name, author_handle, author_id, date, images):
+def get_post_content(text, author_name, author_handle, author_id, msg_id, date, images):
     """Генерация контента Markdown файла."""
     title = text[:20].strip().replace('"', '\\"')
     img_list = "\n  - ".join([f'"{img}"' for img in images])
@@ -42,6 +42,7 @@ date: {date.strftime('%Y-%m-%d %H:%M:%S')}
 author_name: "{author_name}"
 author_handle: "{author_handle}"
 author_id: "{author_id}"
+t_post_id: "{msg_id}"
 images: 
   - {img_list}
 title: "{title}"
@@ -94,7 +95,12 @@ async def get_author_data(message):
     return name, handle, user_id
 
 async def process_messages(messages):
+    texts = [m.text for m in messages if m.text]
+    full_text = "\n".join(texts).strip()
     main_msg = next((m for m in messages if m.text), messages[0])
+
+    if not full_text and not any(m.photo for m in messages):
+        return
     
     # ПОЛУЧАЕМ ДАННЫЕ (теперь 3 параметра)
     author_name, author_handle, author_id = await get_author_data(main_msg)
@@ -142,7 +148,7 @@ async def process_messages(messages):
     post_path = os.path.join(POSTS_DIR, post_filename)
     
     with open(post_path, 'w', encoding='utf-8') as f:
-        f.write(get_post_content(text, author_name, author_handle, author_id, date, image_paths))
+        f.write(get_post_content(text, author_name, author_handle, author_id, msg_id, date, image_paths))
     print(f"✅ Создан новый пост: {post_filename}")
 
 async def main():
@@ -155,7 +161,7 @@ async def main():
     # Собираем последние сообщения
     album_groups = {} # {grouped_id: [messages]}
     
-    async for message in client.iter_messages(CHANNEL_USERNAME, limit=20):
+    async for message in client.iter_messages(CHANNEL_USERNAME, limit=100):
         if isinstance(message, MessageService): continue
         
         if message.grouped_id:

@@ -30,7 +30,7 @@ layout: default
         Написать в Telegram
       </a>
     {% else %}
-      <a href="tg://user?id={{ page.author_id }}" class="contact-button" target="_blank">
+      <a href="https://t.me/{{ site.telegram_channel_name }}/{{ page.t_post_id }}" class="contact-button" target="_blank">
         Написать в Telegram
       </a>
     {% endif %}
