@@ -23,11 +23,15 @@ if (searchInput) {
 
 // Adjust search bar position when keyboard appears (mobile)
 if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', () => {
-    const container = document.querySelector('.search-container');
-    if (container) {
-      const offset = window.innerHeight - window.visualViewport.height;
-      container.style.bottom = `${offset + 20}px`;
-    }
-  });
+  const container = document.querySelector('.search-container');
+
+  function pinToVisualViewport() {
+    if (!container) return;
+    const vv = window.visualViewport;
+    const bottomOffset = window.innerHeight - (vv.offsetTop + vv.height);
+    container.style.bottom = (bottomOffset + 20) + 'px';
+  }
+
+  window.visualViewport.addEventListener('resize', pinToVisualViewport);
+  window.visualViewport.addEventListener('scroll', pinToVisualViewport);
 }
