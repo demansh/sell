@@ -1,0 +1,52 @@
+name: Hourly Telegram Sync
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Запуск в 00 минут каждого часа
+  workflow_dispatch:      # Кнопка для ручного запуска в интерфейсе GitHub
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    # Даем права на запись, чтобы бот мог пушить изменения
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip' # Кэширование ускоряет запуск
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install telethon python-dotenv
+
+      - name: Run Fetch Script
+        env:
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
+          TG_CHANNEL: ${{ secrets.TG_CHANNEL }}
+          TG_SESSION_STRING: ${{ secrets.TG_SESSION_STRING }}
+        run: python fetch_tg.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Добавляем посты, картинки и файл с последним ID
+          git add _posts/ assets/img/posts/ last_id.txt
+          
+          # Проверяем, есть ли что коммитить, чтобы не падать с ошибкой
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update: new posts from Telegram"
+            git push
+          fi
