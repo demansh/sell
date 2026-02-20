@@ -38,6 +38,31 @@
   object-fit: contain;
 }
 
+/* Carousel dots */
+.carousel-wrapper {
+  position: relative;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 0 6px;
+  background: #000;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: background 0.2s;
+}
+
+.carousel-dot.active {
+  background: #fff;
+}
+
 /* Post content */
 .post-details {
   padding: 15px 20px;

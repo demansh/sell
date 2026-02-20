@@ -3,12 +3,17 @@ layout: default
 ---
 
 <article class="post-view">
-  <div class="post-carousel">
-    {% for img in page.images %}
-      <div class="carousel-item">
-        <img src="{{ img | relative_url }}" alt="{{ page.title }}">
-      </div>
-    {% endfor %}
+  <div class="carousel-wrapper">
+    <div class="post-carousel">
+      {% for img in page.images %}
+        <div class="carousel-item">
+          <img src="{{ img | relative_url }}" alt="{{ page.title }}">
+        </div>
+      {% endfor %}
+    </div>
+    {% if page.images.size > 1 %}
+      <div class="carousel-dots"></div>
+    {% endif %}
   </div>
 
   <div class="post-details">
