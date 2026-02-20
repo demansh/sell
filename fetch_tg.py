@@ -3,6 +3,7 @@ import re
 import asyncio
 from datetime import datetime, timedelta, timezone
 from telethon import TelegramClient
+from telethon.sessions import StringSession
 from telethon.tl.types import MessageService, User
 from dotenv import load_dotenv
 
@@ -12,6 +13,7 @@ load_dotenv()
 # Теперь os.getenv сначала ищет в системе, а если не находит — берет из .env
 API_ID = int(os.getenv('TG_API_ID', 0))
 API_HASH = os.getenv('TG_API_HASH')
+SESSION_STRING = os.getenv('TG_SESSION_STRING')
 CHANNEL_USERNAME = os.getenv('TG_CHANNEL')
 POSTS_DIR = '_posts'
 IMAGES_DIR = 'assets/img/posts'
@@ -27,7 +29,7 @@ if not API_ID or not API_HASH:
 os.makedirs(POSTS_DIR, exist_ok=True)
 os.makedirs(IMAGES_DIR, exist_ok=True)
 
-client = TelegramClient('my_session', API_ID, API_HASH)
+client = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
 
 async def get_last_id():
     """Читает ID последнего обработанного сообщения из файла."""
@@ -188,25 +190,6 @@ async def process_messages(messages):
     with open(post_path, 'w', encoding='utf-8') as f:
         f.write(get_post_content(text, author_name, author_handle, author_id, msg_id, date, image_paths))
     print(f"✅ Создан новый пост: {post_filename}")
-
-
-async def main():
-    await client.start(bot_token=BOT_TOKEN)
-    
-    
-
-    # Группируем сообщения в альбомы
-    album_groups = {}
-    for message in reversed(new_messages): # Обрабатываем от старых к новым
-        if message.grouped_id:
-            album_groups.setdefault(message.grouped_id, []).append(message)
-        else:
-            await process_messages([message])
-
-    for group in album_groups.values():
-        await process_messages(sorted(group, key=lambda x: x.id))
-
-    print(f"🚀 Обработка завершена. Найдено сообщений: {len(new_messages)}")
 
 async def main():
     await client.start()

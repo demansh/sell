@@ -8,3 +8,4 @@ vendor
 docs/
 venv/
 my_session.session
+gen_session.py
