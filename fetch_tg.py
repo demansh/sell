@@ -7,6 +7,8 @@ from telethon.sessions import StringSession
 from telethon.tl.types import MessageService, User
 from dotenv import load_dotenv
 
+from llm_utils import analyze_post
+
 # Загружаем переменные из .env файла, если он существует
 load_dotenv() 
 
@@ -67,7 +69,7 @@ def get_smart_title(text, limit=30):
     
     return (truncated.strip() + "...").replace('"', '\\"')
 
-def get_post_content(text, author_name, author_handle, author_id, msg_id, date, images):
+def get_post_content(text, author_name, author_handle, author_id, msg_id, ai_data, date, images):
     """Генерация контента Markdown файла."""
     title = get_smart_title(text)
     img_list = "\n  - ".join([f'"{img}"' for img in images])
@@ -79,6 +81,9 @@ author_name: "{author_name}"
 author_handle: "{author_handle}"
 author_id: "{author_id}"
 t_post_id: "{msg_id}"
+title: "{ai_data['title']}"
+price: {ai_data['price'] if ai_data['price'] else "null"}
+categories: {ai_data['categories']}
 images: 
   - {img_list}
 title: "{title}"
@@ -138,6 +143,9 @@ async def process_messages(messages):
     if not full_text and not any(m.photo for m in messages):
         return
     
+    print(f"🤖 Запрос к LLM для поста {main_msg.id}...")
+    ai_data = await analyze_post(full_text)
+    
     # ПОЛУЧАЕМ ДАННЫЕ (теперь 3 параметра)
     author_name, author_handle, author_id = await get_author_data(main_msg)
     
@@ -188,7 +196,7 @@ async def process_messages(messages):
     post_path = os.path.join(POSTS_DIR, post_filename)
     
     with open(post_path, 'w', encoding='utf-8') as f:
-        f.write(get_post_content(text, author_name, author_handle, author_id, msg_id, date, image_paths))
+        f.write(get_post_content(text, author_name, author_handle, author_id, msg_id, ai_data, date, image_paths))
     print(f"✅ Создан новый пост: {post_filename}")
 
 async def main():
