@@ -1,25 +1,24 @@
 import os
 import json
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Настройка API
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
 if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    client = genai.Client(api_key=GEMINI_API_KEY)
+    MODEL_NAME = 'gemini-1.5-flash'
 else:
-    model = None
+    client = None
+    print("⚠️ GEMINI_API_KEY не установлен")
 
 async def analyze_post(text):
     """
-    Анализирует текст объявления через Gemini LLM.
-    Возвращает словарь с title, price и categories.
+    Анализирует текст объявления через новый Google GenAI SDK.
     """
-    if not model:
-        print("⚠️ Gemini API Key не найден. Используются значения по умолчанию.")
+    if not client:
         return fallback_data(text)
 
     prompt = f"""
@@ -37,23 +36,26 @@ async def analyze_post(text):
     """
 
     try:
-        # Gemini поддерживает асинхронность через generate_content_async
-        response = await model.generate_content_async(prompt)
+        # В новом SDK вызов выглядит так:
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt
+        )
         
+        if not response or not response.text:
+            return fallback_data(text)
+
         # Очистка от markdown-тегов
-        raw_text = response.text
-        clean_json = raw_text.replace('```json', '').replace('```', '').strip()
-        
+        clean_json = response.text.replace('```json', '').replace('```', '').strip()
         data = json.loads(clean_json)
         
-        # Валидация типов (гарантируем наличие полей)
         return {
             "title": str(data.get("title", text[:30])),
             "price": data.get("price") if isinstance(data.get("price"), (int, float)) else None,
             "categories": data.get("categories") if isinstance(data.get("categories"), list) else ["Другое"]
         }
     except Exception as e:
-        print(f"🤖 Ошибка Gemini: {e}")
+        print(f"🤖 Ошибка нового Gemini SDK: {e}")
         return fallback_data(text)
 
 def fallback_data(text):
