@@ -1,11 +1,29 @@
 import os
 import json
+import asyncio
 from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+SYSTEM_PROMPT_TEMPLATE = os.getenv("GEMINI_PROMPT", "Extract JSON from: {text}")
+ALLOWED_CATEGORIES = [
+        "electronics",
+        "computers",
+        "mobile",
+        "furniture",
+        "toys",
+        "music",
+        "arts",
+        "jewelry",
+        "clothing",
+        "sport",
+        "home",
+        "transport",
+        "hobbies",
+        "other"
+    ]
 
 if GEMINI_API_KEY:
     client = genai.Client(api_key=GEMINI_API_KEY)
@@ -21,47 +39,51 @@ async def analyze_post(text):
     if not client:
         return fallback_data(text)
 
-    prompt = f"""
-    Проанализируй объявление о продаже и верни JSON.
-    Текст объявления:
-    "{text}"
+    prompt = SYSTEM_PROMPT_TEMPLATE.format(
+        text=text, 
+        categories=", ".join(ALLOWED_CATEGORIES)
+    )
 
-    Верни ТОЛЬКО JSON с полями:
-    - "title": короткое название товара (3-5 слов, без цены). Если описание содержит модель или название, используй их для заголовка. Если в посте несколько товаров, пиши "Распродажа".
-    - "price": число и валюту через побел (например, 5000 ֏). Для драм (dram, amd, драмов и т.п.) используй ֏. Для долларов $, для евро €, для рубля ₽. Если в посте несколько цен пиши самую низкую цену.
-    - "categories": массив строк (выбери подходящие: электроника, одежда, дом, транспорт, хобби, другое) с маленькой буквы.
+    for attempt in range(3):
+        try:
+            response = client.models.generate_content(
+                model=MODEL_NAME,
+                contents=prompt
+            )
+            
+            if not response or not response.text:
+                continue
 
-    Пример вывода:
-    {{"title": "iPhone 13 Pro Max", "price": 250000 ֏, "categories": ["электроника", "телефоны"]}}
-    """
+            # Очистка JSON
+            raw_content = response.text.strip()
+            if "```" in raw_content:
+                # Извлекаем содержимое между ```json и ```
+                parts = raw_content.split("```")
+                raw_content = parts[1].replace("json", "").strip() if len(parts) > 2 else parts[1]
 
-    try:
-        # В новом SDK вызов выглядит так:
-        response = client.models.generate_content(
-            model=MODEL_NAME,
-            contents=prompt
-        )
-        
-        if not response or not response.text:
-            return fallback_data(text)
+            data = json.loads(raw_content)
+            
+            # Валидация категорий
+            input_cats = data.get("categories", [])
+            valid_cats = [c for c in input_cats if c in ALLOWED_CATEGORIES]
+            if not valid_cats:
+                valid_cats = ["other"]
 
-        # Очистка от markdown-тегов
-        clean_json = response.text.replace('```json', '').replace('```', '').strip()
-        data = json.loads(clean_json)
-        
-        return {
-            "title": str(data.get("title", text[:30])),
-            "price": data.get("price") if isinstance(data.get("price"), (int, float)) else None,
-            "categories": data.get("categories") if isinstance(data.get("categories"), list) else ["Другое"]
-        }
-    except Exception as e:
-        print(f"🤖 Ошибка нового Gemini SDK: {e}")
-        return fallback_data(text)
+            return {
+                "title": str(data.get("title", text[:30])).strip(),
+                "price": data.get("price") if isinstance(data.get("price"), (int, float)) else None,
+                "categories": valid_cats
+            }
+
+        except Exception as e:
+            if "429" in str(e):
+                print(f"⏳ Quota exceeded, waiting 25s...")
+                await asyncio.sleep(25)
+                continue
+            print(f"🤖 LLM Error: {e}")
+            break
+            
+    return fallback_data(text)
 
 def fallback_data(text):
-    """Резервные данные при сбое LLM."""
-    return {
-        "title": text[:30].strip() + "...",
-        "price": None,
-        "categories": ["другое"]
-    }
+    return {"title": text[:30].strip() + "...", "price": None, "categories": ["other"]}
