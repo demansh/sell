@@ -14,6 +14,11 @@ layout: default
       <div class="post-title-overlay">
         {{ post.title }}
       </div>
+      {% if post.price %}
+      <div class="post-price">
+        {% if post.currency == "USD" %}${% elsif post.currency == "EUR" %}€{% elsif post.currency == "RUB" %}₽{% endif %}{{ post.price }}{% if post.currency == "AMD" %} ֏{% endif %}
+      </div>
+      {% endif %}
     </a>
   </div>
   {% endfor %}
