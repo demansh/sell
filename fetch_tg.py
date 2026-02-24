@@ -83,6 +83,7 @@ author_id: "{author_id}"
 t_post_id: "{msg_id}"
 title: "{ai_data['title']}"
 price: {ai_data['price'] if ai_data['price'] else "null"}
+currency: {ai_data['currency'] if ai_data['currency'] else "AMD"}
 categories: {ai_data['categories']}
 images: 
   - {img_list}
