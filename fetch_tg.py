@@ -50,28 +50,8 @@ async def save_last_id(last_id):
 def sanitize_filename(name):
     return re.sub(r'[^\w\-_\.]', '_', name)
 
-def get_smart_title(text, limit=30):
-    if not text:
-        return "Объявление"
-    
-    # Очищаем от лишних пробелов и переносов в начале
-    text = text.strip().split('\n')[0] 
-    
-    if len(text) <= limit:
-        return text.replace('"', '\\"')
-    
-    # Режем до лимита и ищем последний пробел
-    truncated = text[:limit]
-    last_space = truncated.rfind(' ')
-    
-    if last_space != -1:
-        truncated = truncated[:last_space]
-    
-    return (truncated.strip() + "...").replace('"', '\\"')
-
 def get_post_content(text, author_name, author_handle, author_id, msg_id, ai_data, date, images):
     """Генерация контента Markdown файла."""
-    title = get_smart_title(text)
     img_list = "\n  - ".join([f'"{img}"' for img in images])
     
     front_matter = f"""---
@@ -87,7 +67,6 @@ currency: {ai_data['currency'] if ai_data['currency'] else "AMD"}
 categories: {ai_data['categories']}
 images: 
   - {img_list}
-title: "{title}"
 ---
 {text}"""
     return front_matter
@@ -122,7 +101,7 @@ async def get_author_data(message):
     Извлекает имя, никнейм и уникальный ID автора.
     """
     name = "Пользователь"
-    handle = ""  # Будет пустым, если юзернейма нет
+    handle = ""
     user_id = ""
 
     sender = await message.get_sender()

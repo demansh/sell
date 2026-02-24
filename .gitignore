@@ -9,3 +9,4 @@ docs/
 venv/
 my_session.session
 gen_session.py
+__pycache__
