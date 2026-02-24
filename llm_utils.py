@@ -24,6 +24,7 @@ ALLOWED_CATEGORIES = [
     "home",
     "transport",
     "hobbies",
+    "watches",
     "other"
 ]
 ALLOWED_CURRENCIES = ["AMD", "USD", "EUR", "RUB"]
