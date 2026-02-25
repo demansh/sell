@@ -49,6 +49,8 @@ async def analyze_post(text: str) -> dict:
 
             raw_content = re.sub(r"```[a-z]*\n?|```", "", response.text.strip()).strip()
             data = json.loads(raw_content)
+            if isinstance(data, list):
+                data = data[0] if data else {}
 
             price_data = data.get("price")
             amount = None
