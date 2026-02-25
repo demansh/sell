@@ -1,6 +1,7 @@
 import os
 import re
 import asyncio
+import logging
 from datetime import datetime, timedelta, timezone
 from telethon import TelegramClient
 from telethon.sessions import StringSession
@@ -10,10 +11,11 @@ from dotenv import load_dotenv
 from llm_utils import analyze_post
 from config import config
 
-# Загружаем переменные из .env файла, если он существует
-load_dotenv() 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logger = logging.getLogger(__name__)
 
-# Теперь os.getenv сначала ищет в системе, а если не находит — берет из .env
+load_dotenv()
+
 API_ID = int(os.getenv('TG_API_ID', 0))
 API_HASH = os.getenv('TG_API_HASH')
 SESSION_STRING = os.getenv('TG_SESSION_STRING')
@@ -94,7 +96,7 @@ async def cleanup_old_posts():
                         if os.path.exists(img_path):
                             os.remove(img_path)
                     os.remove(filepath)
-                    print(f"🗑 Удален старый пост: {filename}")
+                    logger.info("Deleted old post: %s", filename)
 
 async def get_author_data(message):
     """
@@ -123,7 +125,7 @@ async def process_messages(messages):
     if not full_text and not any(m.photo for m in messages):
         return
     
-    print(f"🤖 Запрос к LLM для поста {main_msg.id}...")
+    logger.info("Requesting LLM for post %s...", main_msg.id)
     ai_data = await analyze_post(full_text)
     
     # ПОЛУЧАЕМ ДАННЫЕ (теперь 3 параметра)
@@ -155,7 +157,7 @@ async def process_messages(messages):
                     f.write(f"date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
                 else:
                     f.write(line)
-        print(f"🔝 Пост обновлен (Bump): {existing_file}")
+        logger.info("Post bumped: %s", existing_file)
         return
 
     # Скачивание медиа
@@ -168,7 +170,7 @@ async def process_messages(messages):
             image_paths.append(f"/{IMAGES_DIR}/{filename}")
     
     if not image_paths:
-        print(f"⏩ Пропуск сообщения {messages[0].id}: нет изображений.")
+        logger.info("Skipping message %s: no images.", messages[0].id)
         return
 
     # Создание Markdown
@@ -177,11 +179,11 @@ async def process_messages(messages):
     
     with open(post_path, 'w', encoding='utf-8') as f:
         f.write(get_post_content(text, author_name, author_handle, author_id, msg_id, ai_data, date, image_paths))
-    print(f"✅ Создан новый пост: {post_filename}")
+    logger.info("Created new post: %s", post_filename)
 
 async def main():
     await client.start()
-    print("🚀 Скрипт запущен...")
+    logger.info("Script started...")
 
     # Чистим старье перед началом
     await cleanup_old_posts()
@@ -191,7 +193,7 @@ async def main():
     
     if last_processed_id is None:
         # ЛОГИКА 1: Первый запуск — берем посты за последний час
-        print("🕯 Первый запуск. Ищем посты за последний час...")
+        logger.info("First run. Looking for posts from the last hour...")
         hour_ago = datetime.now(timezone.utc) - timedelta(hours=1)
         
         async for message in client.iter_messages(CHANNEL_USERNAME):
@@ -200,12 +202,12 @@ async def main():
             new_messages.append(message)
     else:
         # ЛОГИКА 2: Инкрементальный запуск — только новые посты
-        print(f"🔄 Ищем посты новее ID: {last_processed_id}")
+        logger.info("Looking for posts newer than ID: %s", last_processed_id)
         async for message in client.iter_messages(CHANNEL_USERNAME, min_id=last_processed_id):
             new_messages.append(message)
 
     if not new_messages:
-        print("☕️ Новых постов нет.")
+        logger.info("No new posts.")
         return
 
     # Сохраняем ID самого последнего сообщения (они приходят от новых к старым, так что это первый в списке)
@@ -223,7 +225,7 @@ async def main():
     for group in album_groups.values():
         await process_messages(sorted(group, key=lambda x: x.id))
 
-    print(f"🚀 Обработка завершена. Найдено сообщений: {len(new_messages)}")
+    logger.info("Processing complete. Messages found: %d", len(new_messages))
 
 if __name__ == '__main__':
     asyncio.run(main())

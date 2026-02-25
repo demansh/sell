@@ -2,9 +2,12 @@ import os
 import re
 import json
 import asyncio
+import logging
 from google import genai
 from dotenv import load_dotenv
 from config import config
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -16,7 +19,7 @@ if GEMINI_API_KEY:
     MODEL_NAME = "models/gemini-2.5-flash-lite"
 else:
     client = None
-    print("⚠️ GEMINI_API_KEY не установлен")
+    logger.warning("GEMINI_API_KEY is not set")
 
 
 async def analyze_post(text: str) -> dict:
@@ -76,10 +79,10 @@ async def analyze_post(text: str) -> dict:
         except Exception as e:
             status = getattr(e, "status_code", None) or getattr(e, "code", None)
             if status == 429:
-                print(f"⏳ Quota exceeded, waiting {config.llm_quota_backoff_sec}s...")
+                logger.warning("Quota exceeded, waiting %ds...", config.llm_quota_backoff_sec)
                 await asyncio.sleep(config.llm_quota_backoff_sec)
                 continue
-            print(f"🤖 LLM Error: {e}")
+            logger.error("LLM error: %s", e)
             break
 
     return fallback_data(text)
