@@ -74,29 +74,40 @@ images:
     return front_matter
 
 async def cleanup_old_posts():
-    """Удаление постов старше 7 дней и их изображений."""
     now = datetime.now()
     for filename in os.listdir(POSTS_DIR):
         if not filename.endswith(".md"):
             continue
-            
+
         filepath = os.path.join(POSTS_DIR, filename)
-        # Читаем дату из front matter (упрощенно по дате файла или парсинг)
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
-            # Простой поиск даты в Markdown
-            match = re.search(r'date: (\d{4}-\d{2}-\d{2})', content)
-            if match:
-                post_date = datetime.strptime(match.group(1), '%Y-%m-%d')
-                if now - post_date > timedelta(days=config.expiry_days):
-                    # Находим картинки и удаляем
-                    images = re.findall(r'\"(/assets/img/posts/.*?)\"', content)
-                    for img in images:
-                        img_path = img.lstrip('/')
-                        if os.path.exists(img_path):
-                            os.remove(img_path)
-                    os.remove(filepath)
-                    logger.info("Deleted old post: %s", filename)
+
+        date_match = re.search(r'date: (\d{4}-\d{2}-\d{2})', content)
+        if not date_match:
+            continue
+
+        post_date = datetime.strptime(date_match.group(1), '%Y-%m-%d')
+        if now - post_date <= timedelta(days=config.expiry_days):
+            continue
+
+        images_block = re.search(
+            r'^images:\s*\n((?:[ \t]*-[ \t]*"[^\n"]*"\n?)*)',
+            content,
+            re.MULTILINE,
+        )
+        image_paths = re.findall(r'"([^"]+)"', images_block.group(1)) if images_block else []
+
+        for img in image_paths:
+            local_path = img.lstrip('/')
+            if os.path.exists(local_path):
+                os.remove(local_path)
+                logger.info("Deleted image: %s", local_path)
+            else:
+                logger.warning("Image not found during cleanup: %s", local_path)
+
+        os.remove(filepath)
+        logger.info("Deleted old post: %s", filename)
 
 async def get_author_data(message):
     """

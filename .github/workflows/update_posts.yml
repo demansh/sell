@@ -40,8 +40,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Добавляем посты, картинки и файл с последним ID
-          git add _posts/ assets/img/posts/ last_id.txt
+          # Stage additions, modifications, and deletions (posts + images + state)
+          git add -A _posts/ assets/img/posts/ last_id.txt
           
           # Проверяем, есть ли что коммитить, чтобы не падать с ошибкой
           if git diff --staged --quiet; then
