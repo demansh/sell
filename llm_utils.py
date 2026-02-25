@@ -4,30 +4,12 @@ import json
 import asyncio
 from google import genai
 from dotenv import load_dotenv
+from config import config
 
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 SYSTEM_PROMPT_TEMPLATE = os.getenv("GEMINI_PROMPT", "Extract JSON from: {text}")
-QUOTA_BACKOFF_SECONDS = 25
-ALLOWED_CATEGORIES = [
-    "electronics",
-    "computers",
-    "mobile",
-    "furniture",
-    "toys",
-    "music",
-    "arts",
-    "jewelry",
-    "clothing",
-    "sport",
-    "home",
-    "transport",
-    "hobbies",
-    "watches",
-    "other"
-]
-ALLOWED_CURRENCIES = ["AMD", "USD", "EUR", "RUB"]
 
 if GEMINI_API_KEY:
     client = genai.Client(api_key=GEMINI_API_KEY)
@@ -51,10 +33,10 @@ async def analyze_post(text: str) -> dict:
 
     prompt = SYSTEM_PROMPT_TEMPLATE.format(
         text=text,
-        categories=", ".join(ALLOWED_CATEGORIES)
+        categories=", ".join(config.categories)
     )
 
-    for _ in range(3):
+    for _ in range(config.llm_retry_count):
         try:
             response = await asyncio.to_thread(
                 client.models.generate_content,
@@ -75,12 +57,12 @@ async def analyze_post(text: str) -> dict:
             if isinstance(price_data, dict):
                 amount = price_data.get("amount")
                 detected_curr = str(price_data.get("currency", "AMD")).upper()
-                currency = detected_curr if detected_curr in ALLOWED_CURRENCIES else "AMD"
+                currency = detected_curr if detected_curr in config.currencies else "AMD"
             elif isinstance(price_data, (int, float)):
                 amount = price_data
 
             input_cats = data.get("categories", [])
-            valid_cats = [c for c in input_cats if c in ALLOWED_CATEGORIES] or ["other"]
+            valid_cats = [c for c in input_cats if c in config.categories] or ["other"]
 
             return {
                 "title": str(data.get("title", text[:30])).strip(),
@@ -92,8 +74,8 @@ async def analyze_post(text: str) -> dict:
         except Exception as e:
             status = getattr(e, "status_code", None) or getattr(e, "code", None)
             if status == 429:
-                print(f"⏳ Quota exceeded, waiting {QUOTA_BACKOFF_SECONDS}s...")
-                await asyncio.sleep(QUOTA_BACKOFF_SECONDS)
+                print(f"⏳ Quota exceeded, waiting {config.llm_quota_backoff_sec}s...")
+                await asyncio.sleep(config.llm_quota_backoff_sec)
                 continue
             print(f"🤖 LLM Error: {e}")
             break

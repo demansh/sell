@@ -8,6 +8,7 @@ from telethon.tl.types import MessageService, User
 from dotenv import load_dotenv
 
 from llm_utils import analyze_post
+from config import config
 
 # Загружаем переменные из .env файла, если он существует
 load_dotenv() 
@@ -20,7 +21,6 @@ CHANNEL_USERNAME = os.getenv('TG_CHANNEL')
 POSTS_DIR = '_posts'
 IMAGES_DIR = 'assets/img/posts'
 BASE_URL = '/sell'
-EXPIRY_DAYS = 7
 LAST_ID_FILE = 'last_id.txt'
 
 # Проверка на дурака
@@ -86,7 +86,7 @@ async def cleanup_old_posts():
             match = re.search(r'date: (\d{4}-\d{2}-\d{2})', content)
             if match:
                 post_date = datetime.strptime(match.group(1), '%Y-%m-%d')
-                if now - post_date > timedelta(days=EXPIRY_DAYS):
+                if now - post_date > timedelta(days=config.expiry_days):
                     # Находим картинки и удаляем
                     images = re.findall(r'\"(/assets/img/posts/.*?)\"', content)
                     for img in images:
