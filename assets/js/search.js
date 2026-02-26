@@ -9,9 +9,8 @@ if (searchInput) {
 
     posts.forEach(post => {
       const title = post.dataset.title || '';
-      const keywords = post.dataset.keywords ; 
-      const content = post.dataset.content || '';
-      const author = post.dataset.author || '';
+      const keywords = post.dataset.keywords || [] ; 
+      const fullText = post.dataset.content.toLowerCase() || '';
 
       const isPrimaryMatch = title.includes(query) || keywords.includes(query);
 
