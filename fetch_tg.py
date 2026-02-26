@@ -133,7 +133,8 @@ async def process_messages(messages):
     full_text = "\n".join(texts).strip()
     main_msg = next((m for m in messages if m.text), messages[0])
 
-    if not full_text and not any(m.photo for m in messages):
+    if not full_text:
+        logger.info("Skipping message %s: no text.", messages[0].id)
         return
     
     logger.info("Requesting LLM for post %s...", main_msg.id)
