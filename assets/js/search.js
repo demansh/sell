@@ -14,9 +14,9 @@ if (searchInput) {
 
       const isPrimaryMatch = title.includes(query) || keywords.includes(query);
 
-      const isSecondaryMatch = query.length > 3 && fullText.includes(query);
+      // const isSecondaryMatch = query.length > 3 && fullText.includes(query);
 
-      if (query === "" || isPrimaryMatch || isSecondaryMatch) {
+      if (query === "" || isPrimaryMatch) { //|| isSecondaryMatch) {
         post.style.display = 'block';
       } else {
         post.style.display = 'none';
