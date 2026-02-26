@@ -33,6 +33,8 @@ jobs:
           TG_API_HASH: ${{ secrets.TG_API_HASH }}
           TG_CHANNEL: ${{ secrets.TG_CHANNEL }}
           TG_SESSION_STRING: ${{ secrets.TG_SESSION_STRING }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_PROMPT: ${{ secrets.GEMINI_PROMPT }}
         run: python fetch_tg.py
 
       - name: Commit and Push Changes
