@@ -8,12 +8,17 @@ if (searchInput) {
     let hasResults = false;
 
     posts.forEach(post => {
+      const title = post.dataset.title || '';
+      const keywords = post.dataset.keywords ; 
       const content = post.dataset.content || '';
       const author = post.dataset.author || '';
 
-      if (content.includes(query) || author.includes(query)) {
+      const isPrimaryMatch = title.includes(query) || keywords.includes(query);
+
+      const isSecondaryMatch = query.length > 3 && fullText.includes(query);
+
+      if (query === "" || isPrimaryMatch || isSecondaryMatch) {
         post.style.display = 'block';
-        hasResults = true;
       } else {
         post.style.display = 'none';
       }

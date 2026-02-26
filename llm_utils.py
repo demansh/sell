@@ -29,15 +29,12 @@ async def analyze_post(text: str) -> dict:
         text: Raw post text to analyze.
 
     Returns:
-        Dict with keys: title, price, currency, categories.
+        Dict with keys: title, price, currency, keywords.
     """
     if not client:
         return fallback_data(text)
 
-    prompt = SYSTEM_PROMPT_TEMPLATE.format(
-        text=text,
-        categories=", ".join(config.categories)
-    )
+    prompt = SYSTEM_PROMPT_TEMPLATE.format(text=text)
 
     for _ in range(config.llm_retry_count):
         try:
@@ -66,14 +63,11 @@ async def analyze_post(text: str) -> dict:
             elif isinstance(price_data, (int, float)):
                 amount = price_data
 
-            input_cats = data.get("categories", [])
-            valid_cats = [c for c in input_cats if c in config.categories] or ["other"]
-
             return {
                 "title": str(data.get("title", text[:30])).strip(),
                 "price": amount,
                 "currency": currency,
-                "categories": valid_cats,
+                "keywords": [k.lower() for k in data.get("keywords", [])],
             }
 
         except Exception as e:
@@ -89,4 +83,4 @@ async def analyze_post(text: str) -> dict:
 
 
 def fallback_data(text: str) -> dict:
-    return {"title": text[:30], "price": None, "currency": "AMD", "categories": ["other"]}
+    return {"title": text[:30], "price": None, "currency": "AMD", "keywords": ["другое"]}

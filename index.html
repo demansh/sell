@@ -4,7 +4,9 @@ layout: default
 
 <div class="feed-grid" id="postsContainer">
   {% for post in site.posts %}
-  <div class="post-card"
+  <div class="post-card" 
+       data-subject="{{ post.title }}" 
+       data-keywords="{{ post.keywords | join: ',' }}"
        data-content="{{ post.title | downcase }} {{ post.content | strip_html | downcase }}"
        data-author="{{ post.telegram_handle | downcase }}">
     <a href="{{ post.url | relative_url }}">
