@@ -6,9 +6,7 @@ layout: default
   {% for post in site.posts %}
   <div class="post-card" 
        data-title="{{ post.title }}" 
-       data-keywords="{{ post.keywords | join: ',' }}"
-       data-content="{{ post.title | downcase }} {{ post.content | strip_html | downcase }}"
-       data-author="{{ post.telegram_handle | downcase }}">
+       data-keywords="{{ post.keywords | join: ',' }}">
     <a href="{{ post.url | relative_url }}">
       <div class="post-image">
         <img src="{{ post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">

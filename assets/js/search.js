@@ -10,13 +10,10 @@ if (searchInput) {
     posts.forEach(post => {
       const title = post.dataset.title.toLowerCase() || '';
       const keywords = post.dataset.keywords || [] ; 
-      const fullText = post.dataset.content.toLowerCase() || '';
 
-      const isPrimaryMatch = title.includes(query) || keywords.includes(query);
+      const isMatch = title.includes(query) || keywords.includes(query);
 
-      // const isSecondaryMatch = query.length > 3 && fullText.includes(query);
-
-      if (query === "" || isPrimaryMatch) { //|| isSecondaryMatch) {
+      if (query === "" || isMatch) {
         post.style.display = 'block';
       } else {
         post.style.display = 'none';
