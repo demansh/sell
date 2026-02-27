@@ -8,7 +8,7 @@ if (searchInput) {
     let hasResults = false;
 
     posts.forEach(post => {
-      const title = post.dataset.title || '';
+      const title = post.dataset.title.toLowerCase() || '';
       const keywords = post.dataset.keywords || [] ; 
       const fullText = post.dataset.content.toLowerCase() || '';
 
