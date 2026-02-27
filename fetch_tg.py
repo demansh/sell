@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from llm_utils import analyze_post
 from config import config
+from image_optimizer import optimize_image
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -179,7 +180,8 @@ async def process_messages(messages):
             filename = f"{date.strftime('%Y%m%d')}_{msg_id}_{i}.jpg"
             path = os.path.join(IMAGES_DIR, filename)
             await client.download_media(msg.photo, path)
-            image_paths.append(f"/{IMAGES_DIR}/{filename}")
+            final_path = optimize_image(path)
+            image_paths.append(final_path)
     
     if not image_paths:
         logger.info("Skipping message %s: no images.", messages[0].id)
