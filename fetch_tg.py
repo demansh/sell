@@ -60,11 +60,11 @@ def get_post_content(text, author_name, author_handle, author_id, msg_id, ai_dat
     front_matter = f"""---
 layout: post
 date: {date.strftime('%Y-%m-%d %H:%M:%S')}
-author_name: "{author_name}"
+author_name: "{author_name.replace('"', '\\"')}"
 author_handle: "{author_handle}"
 author_id: "{author_id}"
 t_post_id: "{msg_id}"
-title: "{ai_data['title']}"
+title: "{ai_data['title'].replace('"', '\\"')}"
 price: {ai_data['price'] if ai_data['price'] else "null"}
 currency: {ai_data['currency'] if ai_data['currency'] else "AMD"}
 keywords: {ai_data['keywords']}
