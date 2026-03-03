@@ -56,16 +56,18 @@ def sanitize_filename(name):
 def get_post_content(text, author_name, author_handle, author_id, msg_id, ai_data, date, images, preview=None):
     """Генерация контента Markdown файла."""
     img_list = "\n  - ".join([f'"{img}"' for img in images])
-    preview_line = f'\npreview: "{preview}"' if preview else ""
+    preview_line = ('\npreview: "' + preview + '"') if preview else ""
+    safe_author = author_name.replace('"', '\\"')
+    safe_title = ai_data['title'].replace('"', '\\"')
 
     front_matter = f"""---
 layout: post
 date: {date.strftime('%Y-%m-%d %H:%M:%S')}
-author_name: "{author_name.replace('"', '\\"')}"
+author_name: "{safe_author}"
 author_handle: "{author_handle}"
 author_id: "{author_id}"
 t_post_id: "{msg_id}"
-title: "{ai_data['title'].replace('"', '\\"')}"
+title: "{safe_title}"
 price: {ai_data['price'] if ai_data['price'] else "null"}
 currency: {ai_data['currency'] if ai_data['currency'] else "AMD"}
 keywords: {ai_data['keywords']}
