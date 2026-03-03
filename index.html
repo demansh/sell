@@ -9,7 +9,7 @@ layout: default
        data-keywords="{{ post.keywords | join: ',' }}">
     <a href="{{ post.url | relative_url }}">
       <div class="post-image">
-        <img src="{{ post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
+        <img src="{{ post.preview | default: post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
       </div>
       <div class="post-title-overlay">
         {{ post.title }}

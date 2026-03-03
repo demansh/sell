@@ -5,6 +5,27 @@ import os
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
+def create_thumbnail(webp_path: str, max_width: int = 400, quality: int = 65) -> str | None:
+    try:
+        base_path = os.path.splitext(webp_path)[0]
+        thumb_path = f"{base_path}_thumb.webp"
+
+        with Image.open(webp_path) as img:
+            if img.size[0] > max_width:
+                w_percent = max_width / float(img.size[0])
+                h_size = int(img.size[1] * w_percent)
+                img = img.resize((max_width, h_size), Image.Resampling.LANCZOS)
+
+            img.save(thumb_path, "WEBP", quality=quality)
+
+        logger.info("🖼️ Thumbnail created: %s", thumb_path)
+        return thumb_path
+
+    except Exception as e:
+        logger.warning("Thumbnail creation error: %s; %s", webp_path, e)
+        return None
+
+
 def optimize_image(image_path, max_width=1200, quality=80):
     """
     Сжимает изображение, конвертирует в WebP и удаляет оригинал.
