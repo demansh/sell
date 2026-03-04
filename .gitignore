@@ -5,7 +5,6 @@ _site
 vendor
 .DS_Store
 .env
-docs/
 venv/
 my_session.session
 gen_session.py
