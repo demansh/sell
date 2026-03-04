@@ -145,34 +145,23 @@ async def process_messages(messages):
         logger.info("Skipping message %s: no text.", messages[0].id)
         return
     
-    logger.info("Requesting LLM for post %s...", main_msg.id)
-    ai_data = await analyze_post(full_text)
-
-    if ai_data is None:
-        logger.warning("Skipping message %s: prohibited content detected by AI.", main_msg.id)
-        return
-    
-    # ПОЛУЧАЕМ ДАННЫЕ (теперь 3 параметра)
     author_name, author_handle, author_id = await get_author_data(main_msg)
-    
-    text = main_msg.text or ""
     date = main_msg.date
     msg_id = main_msg.id
 
-    # Логика дедупликации стала точнее: текст + конкретный ID
+    # Deduplication
     existing_file = None
     for filename in os.listdir(POSTS_DIR):
         if not filename.endswith(".md"): continue
         f_path = os.path.join(POSTS_DIR, filename)
         with open(f_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            # Проверяем уникальное поле author_id
-            if text[:100] in content and f'author_id: "{author_id}"' in content:
+            if full_text[:100] in content and f'author_id: "{author_id}"' in content:
                 existing_file = f_path
                 break
 
     if existing_file:
-        # Bump: обновляем только дату
+        # Bump
         with open(existing_file, 'r', encoding='utf-8') as f:
             lines = f.readlines()
         with open(existing_file, 'w', encoding='utf-8') as f:
@@ -182,6 +171,13 @@ async def process_messages(messages):
                 else:
                     f.write(line)
         logger.info("Post bumped: %s", existing_file)
+        return
+    
+    logger.info("Requesting LLM for post %s...", main_msg.id)
+    ai_data = await analyze_post(full_text)
+
+    if ai_data is None:
+        logger.warning("Skipping message %s: prohibited content detected by AI.", main_msg.id)
         return
 
     # Скачивание медиа
