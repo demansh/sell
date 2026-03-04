@@ -72,7 +72,7 @@ async def analyze_post(text: str) -> dict:
 
         except Exception as e:
             status = getattr(e, "status_code", None) or getattr(e, "code", None)
-            if status == 429:
+            if status == 429 or status == 503:
                 logger.warning("Quota exceeded, waiting %ds...", config.llm_quota_backoff_sec)
                 await asyncio.sleep(config.llm_quota_backoff_sec)
                 continue
