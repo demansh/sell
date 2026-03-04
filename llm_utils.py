@@ -52,6 +52,10 @@ async def analyze_post(text: str) -> dict:
             if isinstance(data, list):
                 data = data[0] if data else {}
 
+            if not data.get("is_allowed", True):
+                logger.warning("Prohibited content detected!")
+                return None
+
             price_data = data.get("price")
             amount = None
             currency = "AMD"

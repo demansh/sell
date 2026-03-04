@@ -2,7 +2,7 @@ title: Garage Sale
 description: Мобильная витрина объявлений
 remote_theme: jekyll/minima
 markdown: kramdown
-exclude: [fetch_data.py, requirements.txt, .github]
+exclude: [fetch_data.py, requirements.txt, .github, docs.md]
 url: "https://demansh.github.io"
 baseurl: "/sell"
 permalink: /posts/:title

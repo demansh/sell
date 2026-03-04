@@ -147,6 +147,10 @@ async def process_messages(messages):
     
     logger.info("Requesting LLM for post %s...", main_msg.id)
     ai_data = await analyze_post(full_text)
+
+    if ai_data is None:
+        logger.warning("Skipping message %s: prohibited content detected by AI.", main_msg.id)
+        return
     
     # ПОЛУЧАЕМ ДАННЫЕ (теперь 3 параметра)
     author_name, author_handle, author_id = await get_author_data(main_msg)
