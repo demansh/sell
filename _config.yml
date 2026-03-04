@@ -1,7 +1,7 @@
 title: "Yerevan Garage Sale"
 description: "Доска частных объявлений в городе Ереван. Здесь Вы можете купить бывшие в употреблении или новые вещи у тех, кому они больше не нужны."
 author: demansh
-logo: "https://demansh.github.io/sell/assets/img/favicon/android-chrome-512x512.png"
+logo: "/assets/img/favicon/android-chrome-512x512.png"
 remote_theme: jekyll/minima
 markdown: kramdown
 exclude: [fetch_data.py, requirements.txt, .github, docs.md]
