@@ -12,3 +12,4 @@ telegram_channel_name: baraxolka_in_armenia
 future: true
 plugins:
   - jekyll-seo-tag
+  - jekyll-sitemap
