@@ -202,7 +202,7 @@ async def process_messages(messages):
     post_path = os.path.join(POSTS_DIR, post_filename)
 
     with open(post_path, 'w', encoding='utf-8') as f:
-        f.write(get_post_content(text, author_name, author_handle, author_id, msg_id, ai_data, date, image_paths, preview_path))
+        f.write(get_post_content(full_text, author_name, author_handle, author_id, msg_id, ai_data, date, image_paths, preview_path))
     logger.info("Created new post: %s", post_filename)
 
 async def main():
