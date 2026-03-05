@@ -22,7 +22,13 @@ layout: default
       <span class="post-author">{{ page.author_name }}</span>
     </div>
 
-    <h1 class="post-title-full">{{ page.title }}</h1>
+    <h1 class="post-title-full">
+        {% if page.header %}
+          {{ page.header }}
+        {% else %}
+          {{ page.title }}
+        {% endif %}
+    </h1>
 
     <div class="post-content-text">
       {{ content }}

@@ -58,7 +58,18 @@ def get_post_content(text, author_name, author_handle, author_id, msg_id, ai_dat
     img_list = "\n  - ".join([f'"{img}"' for img in images])
     preview_line = ('\npreview: "' + preview + '"') if preview else ""
     safe_author = author_name.replace('"', '\\"')
-    safe_title = ai_data['title'].replace('"', '\\"')
+    
+    product_name = ai_data['title'].replace('"', '\\"')
+    price = ai_data.get('price')
+    currency = ai_data.get('currency') or "AMD"
+    
+    if price and price != "null":
+        seo_title = f"{product_name} за {price} {currency} — Купить в Ереване"
+    else:
+        seo_title = f"{product_name} — Купить в Ереване"
+    safe_title = seo_title.replace('"', '\\"')
+    
+    safe_header = ai_data['title'].replace('"', '\\"')
 
     front_matter = f"""---
 layout: post
@@ -68,6 +79,7 @@ author_handle: "{author_handle}"
 author_id: "{author_id}"
 t_post_id: "{msg_id}"
 title: "{safe_title}"
+header: "{safe_header}"
 price: {ai_data['price'] if ai_data['price'] else "null"}
 currency: {ai_data['currency'] if ai_data['currency'] else "AMD"}
 keywords: {ai_data['keywords']}
