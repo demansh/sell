@@ -67,7 +67,6 @@ def get_post_content(text, author_name, author_handle, author_id, msg_id, ai_dat
         seo_title = f"{product_name} за {price} {currency} — Купить в Ереване"
     else:
         seo_title = f"{product_name} — Купить в Ереване"
-    safe_title = seo_title.replace('"', '\\"')
     
     safe_header = ai_data['title'].replace('"', '\\"')
 
@@ -78,7 +77,7 @@ author_name: "{safe_author}"
 author_handle: "{author_handle}"
 author_id: "{author_id}"
 t_post_id: "{msg_id}"
-title: "{safe_title}"
+title: "{seo_title}"
 header: "{safe_header}"
 price: {ai_data['price'] if ai_data['price'] else "null"}
 currency: {ai_data['currency'] if ai_data['currency'] else "AMD"}

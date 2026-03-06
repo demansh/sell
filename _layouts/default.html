@@ -6,15 +6,21 @@
   <link rel="icon" type="image/x-icon" href="{{ '/assets/img/favicon/favicon.ico' | relative_url }}">
   <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/img/favicon/favicon-32x32.png' | relative_url }}">
   <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/img/favicon/favicon-16x16.png' | relative_url }}">
-
   <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/img/favicon/apple-touch-icon.png' | relative_url }}">
-
   <link rel="manifest" href="{{ '/assets/img/favicon/site.webmanifest' | relative_url }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/grid.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/search.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/post.css' | relative_url }}">
+  {% if page.layout == "post" %}
+    {% assign date_in_seconds = page.date | date: "%s" | plus: 0 %}
+    {% assign seconds_in_day = 86400 %}
+    {% assign days_to_keep = 7 %}
+    {% assign total_offset = days_to_keep | times: seconds_in_day %}
+    {% assign remove_at = date_in_seconds | plus: total_offset %}
+    <meta name="googlebot" content="unavailable_after: {{ remove_at | date: '%d-%b-%Y %H:%M:%S %Z' }}">
+  {% endif %}
 </head>
 <body>
   <main>
