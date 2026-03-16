@@ -5,8 +5,8 @@ logo: "/assets/img/favicon/android-chrome-512x512.png"
 remote_theme: jekyll/minima
 markdown: kramdown
 exclude: [fetch_data.py, requirements.txt, .github, docs.md]
-url: "https://demansh.github.io"
-baseurl: "/sell"
+url: "https://yerevansale.top"
+baseurl: "/"
 permalink: /posts/:title
 telegram_channel_name: baraxolka_in_armenia
 future: true

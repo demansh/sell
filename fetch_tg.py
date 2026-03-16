@@ -23,7 +23,6 @@ SESSION_STRING = os.getenv('TG_SESSION_STRING')
 CHANNEL_USERNAME = os.getenv('TG_CHANNEL')
 POSTS_DIR = '_posts'
 IMAGES_DIR = 'assets/img/posts'
-BASE_URL = '/sell'
 LAST_ID_FILE = 'last_id.txt'
 
 # Проверка на дурака
