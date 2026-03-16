@@ -10,6 +10,7 @@
   <link rel="manifest" href="{{ '/assets/img/favicon/site.webmanifest' | relative_url }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/header.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/grid.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/search.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/post.css' | relative_url }}">
@@ -23,8 +24,10 @@
   {% endif %}
 </head>
 <body>
+  {% include header.html %}
   <main>
     {{ content }}
   </main>
+  <script src="{{ '/assets/js/header.js' | relative_url }}"></script>
 </body>
 </html>

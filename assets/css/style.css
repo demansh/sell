@@ -11,6 +11,7 @@ body {
 main {
   width: 100%;
   max-width: 500px;
+  padding-top: 45px;
 }
 
 @media (min-width: 501px) {

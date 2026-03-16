@@ -22,7 +22,7 @@ exclude:
   - Gemfile.lock
   - README.md
 url: "https://yerevansale.top"
-baseurl: "/"
+baseurl: ""
 permalink: /posts/:title
 telegram_channel_name: baraxolka_in_armenia
 future: true
