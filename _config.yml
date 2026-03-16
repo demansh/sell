@@ -4,7 +4,23 @@ author: Garage Sale Yerevan
 logo: "/assets/img/favicon/android-chrome-512x512.png"
 remote_theme: jekyll/minima
 markdown: kramdown
-exclude: [fetch_data.py, requirements.txt, .github, docs.md]
+exclude:
+  - fetch_data.py
+  - requirements.txt
+  - .github
+  - docs.md
+  - fetch_tg.py
+  - llm_utils.py
+  - config.py
+  - image_optimizer.py
+  - setup.sh
+  - last_id.txt
+  - my_session.session
+  - gen_session.py
+  - venv/
+  - Gemfile
+  - Gemfile.lock
+  - README.md
 url: "https://yerevansale.top"
 baseurl: "/"
 permalink: /posts/:title
