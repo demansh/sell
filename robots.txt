@@ -3,6 +3,7 @@ layout: null
 ---
 User-agent: *
 Allow: /
+Allow: /assets/img/favicon/favicon.ico
 
 Sitemap: {{ site.url }}/sitemap.xml
 
