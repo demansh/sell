@@ -1,24 +1,34 @@
 // Search filter functionality
 const searchInput = document.getElementById('searchInput');
 
+function filterPosts(query) {
+  const normalized = query.toLowerCase().trim();
+  document.querySelectorAll('.post-card').forEach(post => {
+    const title = post.dataset.title.toLowerCase() || '';
+    const keywords = post.dataset.keywords || '';
+    const isMatch = title.includes(normalized) || keywords.includes(normalized);
+    post.style.display = (normalized === '' || isMatch) ? 'block' : 'none';
+  });
+}
+
 if (searchInput) {
+  const params = new URLSearchParams(window.location.search);
+  const initialQuery = params.get('q') || '';
+  if (initialQuery) {
+    searchInput.value = initialQuery;
+    filterPosts(initialQuery);
+  }
+
   searchInput.addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase().trim();
-    const posts = document.querySelectorAll('.post-card');
-    let hasResults = false;
-
-    posts.forEach(post => {
-      const title = post.dataset.title.toLowerCase() || '';
-      const keywords = post.dataset.keywords || [] ; 
-
-      const isMatch = title.includes(query) || keywords.includes(query);
-
-      if (query === "" || isMatch) {
-        post.style.display = 'block';
-      } else {
-        post.style.display = 'none';
-      }
-    });
+    const query = e.target.value;
+    filterPosts(query);
+    const url = new URL(window.location);
+    if (query.trim()) {
+      url.searchParams.set('q', query);
+    } else {
+      url.searchParams.delete('q');
+    }
+    history.replaceState(null, '', url);
   });
 }
 
