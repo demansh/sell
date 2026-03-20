@@ -6,7 +6,7 @@
   z-index: 100;
   display: flex;
   justify-content: center;
-  background-color: #f5f5f5;
+  background-color: #2480CC;
   border-bottom: none;
   transform: translateY(0);
   transition: transform 0.25s ease;
@@ -36,4 +36,5 @@
 .site-header__title {
   font-size: 1.1rem;
   font-weight: 600;
+  color: #fff
 }
