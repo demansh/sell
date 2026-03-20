@@ -13,6 +13,7 @@ exclude:
   - llm_utils.py
   - config.py
   - image_optimizer.py
+  - update_keywords.py
   - setup.sh
   - last_id.txt
   - my_session.session

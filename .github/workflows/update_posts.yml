@@ -36,16 +36,18 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_PROMPT: ${{ secrets.GEMINI_PROMPT }}
         run: python fetch_tg.py
+      
+      - name: Update Top Keywords
+        run: python update_keywords.py
 
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Stage additions, modifications, and deletions (posts + images + state)
-          git add -A _posts/ assets/img/posts/ last_id.txt
+          # Added _data/ to ensure the new keywords file is pushed
+          git add -A _posts/ assets/img/posts/ last_id.txt _data/
           
-          # Проверяем, есть ли что коммитить, чтобы не падать с ошибкой
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
