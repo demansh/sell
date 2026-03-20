@@ -12,7 +12,7 @@ DATA_DIR = '_data'
 OUTPUT_FILE = os.path.join(DATA_DIR, 'top_keywords.yml')
 
 # Add any keywords here you want to ignore
-BLACKLIST = {'другое', 'разное', 'прочее'}
+BLACKLIST = {'другое', 'разное', 'прочее', 'смартфон'}
 
 def update_top_keywords():
     keyword_counts = Counter()
