@@ -1,0 +1,17 @@
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h3>Топ-10 категорий</h3>
+  </div>
+  
+  <ul class="keyword-list">
+    {% for keyword in site.data.top_keywords %}
+      <li>
+        <a href="{{ site.baseurl }}/?q={{ keyword | url_encode }}" class="keyword-link">
+            #{{ keyword }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div id="sidebar-overlay" class="sidebar-overlay"></div>

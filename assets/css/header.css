@@ -38,3 +38,29 @@
   font-weight: 600;
   color: #fff
 }
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001; /* Above everything except maybe the sidebar */
+}
+
+.hamburger .bar {
+  width: 30px;
+  height: 3px;
+  background-color: #333; /* Change to white if your header is dark */
+  border-radius: 10px;
+  transition: all 0.3s linear;
+}
+
+/* Optional: Animation for when sidebar is open */
+.hamburger.open .bar:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open .bar:nth-child(2) { opacity: 0; }
+.hamburger.open .bar:nth-child(3) { transform: rotate(-45deg) translate(7px, -6px); }
