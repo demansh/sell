@@ -5,10 +5,62 @@ sitemap:
   priority: 1.0
 ---
 
+{% assign regular_posts = site.posts | where_exp: "post", "post.premium != true" %}
+{% assign premium_posts = site.posts | where: "premium", true %}
+
 <div class="feed-grid" id="postsContainer">
-  {% for post in site.posts %}
-  <div class="post-card" 
-       data-title="{{ post.title }}" 
+  {% for post in regular_posts limit: 1 %}
+  <div class="post-card"
+       data-title="{{ post.title }}"
+       data-keywords="{{ post.keywords | join: ',' }}">
+    <a href="{{ post.url | relative_url }}">
+      <div class="post-image">
+        <img src="{{ post.preview | default: post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
+      </div>
+      <div class="post-title-overlay">
+        {% if post.header %}
+          {{ post.header }}
+        {% else %}
+          {{ post.title }}
+        {% endif %}
+      </div>
+      {% if post.price %}
+      <div class="post-price">
+        {% if post.currency == "USD" %}${% elsif post.currency == "EUR" %}€{% elsif post.currency == "RUB" %}₽{% endif %}{{ post.price }}{% if post.currency == "AMD" %} ֏{% endif %}
+      </div>
+      {% endif %}
+    </a>
+  </div>
+  {% endfor %}
+
+  {% for post in premium_posts %}
+  <div class="post-card"
+       data-title="{{ post.title }}"
+       data-keywords="{{ post.keywords | join: ',' }}"
+       data-premium="true">
+    <a href="{{ post.url | relative_url }}">
+      <div class="post-image">
+        <img src="{{ post.preview | default: post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
+      </div>
+      <div class="post-title-overlay">
+        {% if post.header %}
+          {{ post.header }}
+        {% else %}
+          {{ post.title }}
+        {% endif %}
+      </div>
+      {% if post.price %}
+      <div class="post-price">
+        {% if post.currency == "USD" %}${% elsif post.currency == "EUR" %}€{% elsif post.currency == "RUB" %}₽{% endif %}{{ post.price }}{% if post.currency == "AMD" %} ֏{% endif %}
+      </div>
+      {% endif %}
+    </a>
+  </div>
+  {% endfor %}
+
+  {% for post in regular_posts offset: 1 %}
+  <div class="post-card"
+       data-title="{{ post.title }}"
        data-keywords="{{ post.keywords | join: ',' }}">
     <a href="{{ post.url | relative_url }}">
       <div class="post-image">

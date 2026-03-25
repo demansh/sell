@@ -1,14 +1,30 @@
 // Search filter functionality
 const searchInput = document.getElementById('searchInput');
 
+function repositionPremium(container) {
+  const premiumCard = container.querySelector('[data-premium="true"]');
+  if (!premiumCard || premiumCard.style.display === 'none') return;
+
+  const visibleRegular = [...container.querySelectorAll('.post-card:not([data-premium="true"])')]
+    .filter(c => c.style.display !== 'none');
+
+  if (visibleRegular.length > 0) {
+    visibleRegular[0].insertAdjacentElement('afterend', premiumCard);
+  } else {
+    container.prepend(premiumCard);
+  }
+}
+
 function filterPosts(query) {
   const normalized = query.toLowerCase().trim();
-  document.querySelectorAll('.post-card').forEach(post => {
+  const container = document.getElementById('postsContainer');
+  container.querySelectorAll('.post-card').forEach(post => {
     const title = post.dataset.title.toLowerCase() || '';
     const keywords = post.dataset.keywords || '';
     const isMatch = title.includes(normalized) || keywords.includes(normalized);
     post.style.display = (normalized === '' || isMatch) ? 'block' : 'none';
   });
+  repositionPremium(container);
 }
 
 if (searchInput) {

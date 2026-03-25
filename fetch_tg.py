@@ -97,6 +97,9 @@ async def cleanup_old_posts():
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
 
+        if 'premium: true' in content:
+            continue
+
         date_match = re.search(r'date: (\d{4}-\d{2}-\d{2})', content)
         if not date_match:
             continue
