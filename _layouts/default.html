@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="{{ '/assets/css/search.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/post.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/sidebar.css' | relative_url }}"
-  {% if page.layout == "post" %}
+  {% if page.layout == "post" and page.premium != true %}
     {% assign date_in_seconds = page.date | date: "%s" | plus: 0 %}
     {% assign seconds_in_day = 86400 %}
     {% assign days_to_keep = 7 %}
