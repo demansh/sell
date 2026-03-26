@@ -52,10 +52,10 @@ async def save_last_id(last_id):
 def sanitize_filename(name):
     return re.sub(r'[^\w\-_\.]', '_', name)
 
-def get_post_content(text, author_name, author_handle, author_id, msg_id, ai_data, date, images, preview=None):
+def get_post_content(text, author_name, author_handle, author_id, msg_id, ai_data, date, images, image=None):
     """Генерация контента Markdown файла."""
     img_list = "\n  - ".join([f'"{img}"' for img in images])
-    preview_line = ('\npreview: "' + preview + '"') if preview else ""
+    image_line = ('\nimage: "' + image + '"') if image else ""
     safe_author = author_name.replace('"', '\\"')
     
     product_name = ai_data['title'].replace('"', '\\"')
@@ -82,7 +82,7 @@ price: {ai_data['price'] if ai_data['price'] else "null"}
 currency: {ai_data['currency'] if ai_data['currency'] else "AMD"}
 keywords: {ai_data['keywords']}
 images:
-  - {img_list}{preview_line}
+  - {img_list}{image_line}
 ---
 {text}"""
     return front_matter
@@ -115,9 +115,9 @@ async def cleanup_old_posts():
         )
         image_paths = re.findall(r'"([^"]+)"', images_block.group(1)) if images_block else []
 
-        preview_match = re.search(r'^preview:\s*"([^"]+)"', content, re.MULTILINE)
-        if preview_match:
-            image_paths.append(preview_match.group(1))
+        image_match = re.search(r'^image:\s*"([^"]+)"', content, re.MULTILINE)
+        if image_match:
+            image_paths.append(image_match.group(1))
 
         for img in image_paths:
             local_path = img.lstrip('/')
@@ -195,7 +195,7 @@ async def process_messages(messages):
 
     # Скачивание медиа
     image_paths = []
-    preview_path = None
+    image_path = None
     for i, msg in enumerate(messages):
         if msg.photo:
             filename = f"{date.strftime('%Y%m%d')}_{msg_id}_{i}.jpg"
@@ -204,7 +204,7 @@ async def process_messages(messages):
             final_path = optimize_image(path)
             image_paths.append(final_path)
             if i == 0:
-                preview_path = create_thumbnail(final_path)
+                image_path = create_thumbnail(final_path)
 
     if not image_paths:
         logger.info("Skipping message %s: no images.", messages[0].id)
@@ -215,7 +215,7 @@ async def process_messages(messages):
     post_path = os.path.join(POSTS_DIR, post_filename)
 
     with open(post_path, 'w', encoding='utf-8') as f:
-        f.write(get_post_content(full_text, author_name, author_handle, author_id, msg_id, ai_data, date, image_paths, preview_path))
+        f.write(get_post_content(full_text, author_name, author_handle, author_id, msg_id, ai_data, date, image_paths, image_path))
     logger.info("Created new post: %s", post_filename)
 
 async def main():

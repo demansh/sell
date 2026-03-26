@@ -15,7 +15,7 @@ sitemap:
        data-keywords="{{ post.keywords | join: ',' }}">
     <a href="{{ post.url | relative_url }}">
       <div class="post-image">
-        <img src="{{ post.preview | default: post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
+        <img src="{{ post.image | default: post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
       </div>
       <div class="post-title-overlay">
         {% if post.header %}
@@ -40,7 +40,7 @@ sitemap:
        data-premium="true">
     <a href="{{ post.url | relative_url }}">
       <div class="post-image">
-        <img src="{{ post.preview | default: post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
+        <img src="{{ post.image | default: post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
       </div>
       <div class="post-title-overlay">
         {% if post.header %}
@@ -64,7 +64,7 @@ sitemap:
        data-keywords="{{ post.keywords | join: ',' }}">
     <a href="{{ post.url | relative_url }}">
       <div class="post-image">
-        <img src="{{ post.preview | default: post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
+        <img src="{{ post.image | default: post.images[0] | relative_url }}" alt="{{ post.title }}" loading="lazy">
       </div>
       <div class="post-title-overlay">
         {% if post.header %}
