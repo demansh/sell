@@ -30,3 +30,9 @@ future: true
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      sitemap: false # Posts are hiddent from sitemap by default

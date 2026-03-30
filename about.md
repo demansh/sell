@@ -2,6 +2,7 @@
 layout: default
 title: О проекте
 permalink: /about
+sitemap: false
 ---
 
 # О проекте

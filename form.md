@@ -2,6 +2,7 @@
 layout: default
 title: Разместить объявление
 permalink: /form
+sitemap: false
 ---
 
 # Функционал в разработке
